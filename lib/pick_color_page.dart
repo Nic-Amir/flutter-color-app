@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui' as ui;
 
 class PickColorPage extends StatefulWidget {
   const PickColorPage({Key? key}) : super(key: key);
@@ -7,10 +8,31 @@ class PickColorPage extends StatefulWidget {
   State<PickColorPage> createState() => _PickColorPageState();
 }
 
+class MyCustomPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {}
+
+  @override
+  bool shouldRepaint(MyCustomPainter delegate) {
+    return true;
+  }
+}
+
 class _PickColorPageState extends State<PickColorPage> {
   double redvalue = 0;
   double greenvalue = 0;
   double bluevalue = 0;
+
+  List<Color> savedcolor = [];
+
+  void addToSavedColorArr() {
+    setState(() {
+      savedcolor.insert(
+          0,
+          Color.fromARGB(
+              250, redvalue.toInt(), greenvalue.toInt(), bluevalue.toInt()));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +76,20 @@ class _PickColorPageState extends State<PickColorPage> {
                 child: Container(
               child: Column(
                 children: <Widget>[
-                  Center(
-                    child: Text("Select le Color"),
+                  Container(
+                    height: 48,
+                    child: GridView.builder(
+                        itemCount: savedcolor.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 53, crossAxisSpacing: 10),
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                              decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: savedcolor[index],
+                          ));
+                        }),
                   ),
                   Container(
                       margin: EdgeInsets.symmetric(vertical: 20),
@@ -68,41 +102,21 @@ class _PickColorPageState extends State<PickColorPage> {
                       )),
                   ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context);
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                  title: Row(
-                                    children: <Widget>[
-                                      Text('Your color is'),
-                                      Container(
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          width: 30,
-                                          height: 30,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Color.fromARGB(
-                                                250,
-                                                redvalue.toInt(),
-                                                greenvalue.toInt(),
-                                                bluevalue.toInt()),
-                                          ))
-                                    ],
-                                  ),
-                                  content:
-                                      const Text('Thats all, congrats mate :)'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(context, 'Okay'),
-                                      child: const Text('Okay'),
-                                    ),
-                                  ]);
-                            });
+                        addToSavedColorArr();
                       },
-                      child: Text("Pick"))
+                      child: Text("Save this color")),
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: 20,
+                      right: 20,
+                      left: 20,
+                    ),
+                    height: 200,
+                    color: Colors.yellow[100],
+                    // child: CustomPaint(
+                    //   painter: MyCustomPainter(),
+                    // ),
+                  ),
                 ],
               ),
             ))

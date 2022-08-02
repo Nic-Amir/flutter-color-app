@@ -65,9 +65,15 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           navigateToPickColor(context);
         },
-        label: const Text('Pick a Color'),
-        icon: const Icon(Icons.colorize_rounded),
-        backgroundColor: Colors.white,
+        label: const Text(
+          'Pick a Color',
+          style: TextStyle(color: Colors.white),
+        ),
+        icon: const Icon(
+          Icons.colorize_rounded,
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.black87,
       ),
     );
   }
